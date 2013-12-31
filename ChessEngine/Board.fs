@@ -321,9 +321,48 @@ module ChessBoard =
                 | _ -> ()
             | _ -> ()
                 
-            
+        member x.SetEnPassantMove target color = 
+            if (enPassantPosition = target) && (color <> enPassantColor) then
+                let locationOffset = if color = Black then 8 else -8
+                let targetPosition = target + locationOffset
+                let square = squares.[targetPosition]
 
-        member x.MovePiece (source, target) (promoteToPiece:PieceType) = 
+                lastMove.TakenPiece <- new PieceTaken(square.Piece.Moved, square.Piece.Color, square.Piece.PieceType, targetPosition)
+                squares.[targetPosition].Piece.PieceType <- None
+                fiftyMove <- 0
+                true
+            else 
+                false
+
+        member x.KingCastle (piece:Piece) (source:int) (target:int) = 
+            if piece.PieceType = King then
+                
+                // Handles the castling given a target (a), source (b), and color
+                let f a b color = 
+                    squares.[a].Piece <- squares.[b].Piece  // Move b to a
+                    squares.[b].Piece.PieceType <- None     // set b's old position to none
+                    match color with
+                    | Black -> blackCastled <- true
+                    | White -> whiteCastled <- true
+                    let x = squares.[a].Piece
+                    lastMove.MovingPieceSecondary <- new PieceMoving(x.Color, x.PieceType, x.Moved, source, target)
+                    squares.[a].Piece.Moved <- true         // since b moved to a, moved = true
+                
+                match piece.Color, source with
+                | White, 60 -> 
+                    match target with
+                    | 62 when squares.[63].Piece.PieceType <> None -> f 61 63 White // Castle right
+                    | 58 when squares.[56].Piece.PieceType <> None -> f 56 59 White // Castle left
+                    | _ -> ()
+                | Black, 4 -> 
+                    match target with
+                    | 6 when squares.[7].Piece.PieceType <> None -> f 7 5 Black     // Castle right
+                    | 2 when squares.[0].Piece.PieceType <> None -> f 0 3 Black     // Castle left
+                    | _ -> ()
+                | _, _ -> ()
+
+        /// Move a specified piece from the source position to the target position
+        member x.MovePiece (source, target) (promoteToPiece:PieceType) : MoveContent = 
             let piece = squares.[source].Piece
             let move = new MoveContent()
             fiftyMove <- fiftyMove + 1
@@ -331,13 +370,38 @@ module ChessBoard =
             if piece.Color = Black then 
                 moveCount <- moveCount + 1
 
-            (*
-            //En Passant
-            if (board.EnPassantPosition > 0)
-            {
-                board.LastMove.EnPassantOccured = SetEnpassantMove(board, dstPosition, piece.PieceColor);
-            }
-            *)
+            if enPassantPosition > 0 then
+                lastMove.EnPassantOccured <- x.SetEnPassantMove target piece.Color
+
+            if not lastMove.EnPassantOccured then
+                let x = squares.[target]
+                match x.Piece.PieceType with 
+                | None -> lastMove.TakenPiece <- new PieceTaken(false, White, None, target)
+                | _ -> lastMove.TakenPiece <- new PieceTaken(x.Piece.Moved, x.Piece.Color, x.Piece.PieceType, target)
+
+            lastMove.MovingPiecePrimary <- new PieceMoving(piece.Color, piece.PieceType, piece.Moved, source, target)
+
+            // Now that the piece has moved, there is no longer a piece at source
+            squares.[source].Piece.PieceType <- None
+
+            // Add the piece to the new position
+            piece.Moved <- true
+            piece.Selected <- false
+            squares.[target].Piece <- piece
+
+            // Reset En Passant position
+            enPassantPosition <- 0
+
+            // Record En Passant if pawn moving
+            if piece.PieceType = Pawn then
+                fiftyMove <- 0
+                x.RecordEnPassant piece.Color piece.PieceType source target
+            
+            whoseMove <- if whoseMove = White then Black else White // Change turns after move made
+            x.KingCastle piece source target
+            lastMove.PawnPromoted <- x.PromotePawns piece target promoteToPiece // Promote pawns and record if it was possible
+            staleMate <- fiftyMove >= 50 // Force stalemate if 50 move exceeded
+            lastMove // Return previous move now after executing new move
 
         new() = new Board("")
 
@@ -357,7 +421,7 @@ module ChessBoard =
         x.WhoseMove <- y.WhoseMove
         x.EnPassantPosition <- y.EnPassantPosition
         x.EnPassantColor <- y.EnPassantColor
-        // zobrist hash?
+        // TODO: zobrist hash? leaving it blank for now
         x.LastMove <- y.LastMove
         x.Score <- y.Score
         x.MoveCount <- y.MoveCount

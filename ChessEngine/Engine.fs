@@ -17,7 +17,7 @@ module Engine =
             and set value = board.WhoseMove <- value
 
         /// Initiate board using Forsyth-Edwards notation
-        member x.IniateBoard fen = 
+        member x.IniateBoard fen B= 
             HumanPlayer <- White
             board <- new Board(fen)
             board.WhoseMove <- White
@@ -54,21 +54,34 @@ module Engine =
 
         member x.SetPieceSelection (row, col, selection) = 
             let index = (row, col) |> ToIndex
-            match board.Squares.[index].Piece.PieceType with
-            | None -> ()
-            | _ -> board.Squares.[index].Piece.Selected <- selection
+            // Only allow selection of non-empty squares            
+            if board.Squares.[index].Piece.PieceType <> None then
+                board.Squares.[index].Piece.Selected <- selection
 
+        /// Attempt to move the piece at the source coordinates to the target coordinates
         member x.MovePiece(sourceRow, sourceColumn) (targetRow, targetColumn) = 
             let sourceIndex = (sourceRow, sourceColumn) |> ToIndex
             let targetIndex = (targetRow, targetColumn) |> ToIndex
+            
                 
             let piece = board.Squares.[sourceIndex].Piece
-            previousBoard <- BoardCopy board
-          //  board.Move
-           
+            previousBoard <- BoardCopy board // Previous board is a copy of the current board
+            
+            board.MovePiece (sourceIndex, targetIndex) Queen |> ignore // Promote to queen by default
+            ValidMoves.GenerateValidMoves board // generate the new valid moves
 
+            // Look to see if there is still a check in place. If so, reject the move
+            if (piece.Color = White && board.WhiteCheck) || (piece.Color = Black && board.BlackCheck) then 
+                board <- BoardCopy board
+                ValidMoves.GenerateValidMoves(board)
+                false
+            else 
+                true
 
-        // Default constructor
+        /// Generates the valid moves for the chess board
+        member x.GenerateValidMoves() = ValidMoves.GenerateValidMoves board
+
+        /// Default constructor. Makes new board using default Forsyth-Edward notation
         new () = new Engine("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 
         
