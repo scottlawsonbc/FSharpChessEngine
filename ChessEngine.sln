@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.20827.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ChessEngine", "ChessEngine\ChessEngine.fsproj", "{C9316D40-7EBB-4EF7-AEC7-5DFC3A348133}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CSharp engine", "CSharp engine", "{9A3F8969-F2EC-4C04-812F-FC5186FE62F5}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\Downloads\chessgamestarterkit2008\Board.cs = ..\..\..\..\Downloads\chessgamestarterkit2008\Board.cs
+		..\..\..\..\Downloads\chessgamestarterkit2008\ChessBoard.cs = ..\..\..\..\Downloads\chessgamestarterkit2008\ChessBoard.cs
+		..\..\..\..\Downloads\chessgamestarterkit2008\Engine.cs = ..\..\..\..\Downloads\chessgamestarterkit2008\Engine.cs
+		..\..\..\..\Downloads\chessgamestarterkit2008\MoveContent.cs = ..\..\..\..\Downloads\chessgamestarterkit2008\MoveContent.cs
+		..\..\..\..\Downloads\chessgamestarterkit2008\Piece.cs = ..\..\..\..\Downloads\chessgamestarterkit2008\Piece.cs
+		..\..\..\..\Downloads\chessgamestarterkit2008\PieceMoves.cs = ..\..\..\..\Downloads\chessgamestarterkit2008\PieceMoves.cs
+		..\..\..\..\Downloads\chessgamestarterkit2008\PieceValidMoves.cs = ..\..\..\..\Downloads\chessgamestarterkit2008\PieceValidMoves.cs
+		..\..\..\..\Downloads\chessgamestarterkit2008\Program.cs = ..\..\..\..\Downloads\chessgamestarterkit2008\Program.cs
+		..\..\..\..\Downloads\chessgamestarterkit2008\Square.cs = ..\..\..\..\Downloads\chessgamestarterkit2008\Square.cs
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C9316D40-7EBB-4EF7-AEC7-5DFC3A348133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9316D40-7EBB-4EF7-AEC7-5DFC3A348133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9316D40-7EBB-4EF7-AEC7-5DFC3A348133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9316D40-7EBB-4EF7-AEC7-5DFC3A348133}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
