@@ -2,11 +2,12 @@
 An F# chess engine inspired by the ChessBin chess engine
 
 # Why?
-I started developing this chess engine in 2013 because I wanted to explore and learn more about F\#, an interesting function-first programming language. F# is a strongly typed, funtional-first programming language that encompasses functional, imperative, and object-oriented paradigms.
+I started developing this chess engine because I wanted to explore and learn more about F\#, an interesting function-first programming language. F# is a strongly typed, funtional-first programming language that encompasses functional, imperative, and object-oriented paradigms.
 
 Certain aspects of the chess engine can be implemented elegantly using F#. For example, F#'s typing system and minimal syntax are well suited for representing chess pieces
 
-'''fsharp
+```fsharp
+
     type PieceType = 
         | None
         | Pawn
@@ -24,6 +25,7 @@ Certain aspects of the chess engine can be implemented elegantly using F#. For e
 *Active Patterns* provide a syntactically elegant way to process Forsyth-Edwards chess notation
 
 ```fsharp
+
     static member GetIntFromColumn col = 
         match col with
         | 'a' -> 0
@@ -59,6 +61,7 @@ Certain aspects of the chess engine can be implemented elegantly using F#. For e
 Unlike Haskell, F# is not a purely functional language; F# is *functional-first*. Imperative programming is used when it makes sense to do so. Handling mutable board state is one example
 
 ```fsharp
+
     [<Sealed>] 
     /// A chessboard containing squares
     type Board(fen:string) = 
@@ -84,13 +87,23 @@ Unlike Haskell, F# is not a purely functional language; F# is *functional-first*
 
         let mutable lastMove = new MoveContent()
 
-...
+        /// Gets or sets the attacked value of the piece
+        member x.AttackedValue
+            with get() = attackedValue
+            and set value = attackedValue <- value
 
+        /// Gets or sets the defended alue of the piece
+        member x.DefendedValue
+           with get() = defendedValue
+           and set value = defendedValue <- value
+
+        ...
 ```
 
 Pattern matching is frequently used for tasks such as evaluating valid piece moves.
 
 ```fsharp
+
     let CheckValidMovesPawn (moves:System.Collections.Generic.List<int>) (piece:Piece) (pos:int) (board:Board) (count:int) =   
         for i = 0 to count do
             let target = moves.[i]
