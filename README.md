@@ -2,7 +2,7 @@
 An F# chess engine inspired by the ChessBin chess engine
 
 # Why?
-I started developing this chess engine in 2013 because I wanted to explore and learn more about [F\#], an interesting function-first programming language. F# is a strongly typed, funtional-first programming language that encompasses functional, imperative, and object-oriented paradigms.
+I started developing this chess engine in 2013 because I wanted to explore and learn more about F\#, an interesting function-first programming language. F# is a strongly typed, funtional-first programming language that encompasses functional, imperative, and object-oriented paradigms.
 
 Certain aspects of the chess engine can be implemented elegantly using F#. For example, F#'s typing system and minimal syntax are well suited for representing chess pieces
 
