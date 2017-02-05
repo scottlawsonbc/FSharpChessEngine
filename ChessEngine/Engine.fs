@@ -1,5 +1,6 @@
 ﻿namespace ChessEngine.Core
 
+[<AutoOpenAttribute>]
 module Engine = 
 
     open System
